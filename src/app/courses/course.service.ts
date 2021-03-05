@@ -8,22 +8,28 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class CourseService{
-  retrieveAll(): Course[]{
-    return COURSES;
+
+  private baseUrl='http://localhost:3100/api/courses';
+  constructor(private http:HttpClient){}
+
+  retrieveAll(): Observable<Course[]>{
+    return this.http.get<Course[]>(this.baseUrl);
   }
 
-  retrieveById(id: number): Course{
-    return COURSES.find((courseIntereator: Course)=> courseIntereator.id === id)
+  retrieveById(id: number): Observable<Course>{
+    return this.http.get<Course>(`${this.baseUrl}/${id}`);
   }
 
-  save(course: Course):void{
-    if(course.id){
-      const courseIndex = COURSES.findIndex((courseIntereator: Course)=> courseIntereator.id === course.id);
-
-      COURSES[courseIndex] = course;
-    }else{
-      COURSES.push(course)
+  save(course: Course): Observable<Course> {
+    if(course.id) {
+        return this.http.put<Course>(`${this.baseUrl}/${course.id}`, course);
+    } else {
+        return this.http.post<Course>(`${this.baseUrl}`, course);
     }
+  }
+
+  deleteById(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
 
 }
@@ -37,7 +43,7 @@ var COURSES: Course[] = [
         code: 'XLF-1212',
         rating: 3,
         price: 12.99,
-        image: '/assets/images/cli.png',
+        imageUrl: '/assets/images/cli.png',
     },
     {
         id: 2,
@@ -48,7 +54,7 @@ var COURSES: Course[] = [
         code: 'DWQ-3412',
         rating: 3.5,
         price: 24.99,
-        image: '/assets/images/forms.png',
+        imageUrl: '/assets/images/forms.png',
     },
     {
         id: 3,
@@ -59,7 +65,7 @@ var COURSES: Course[] = [
         code: 'QPL-0913',
         rating: 4.0,
         price: 36.99,
-        image: '/assets/images/http.png',
+        imageUrl: '/assets/images/http.png',
     },
     {
         id: 4,
@@ -70,7 +76,7 @@ var COURSES: Course[] = [
         code: 'OHP-1095',
         rating: 4.5,
         price: 46.99,
-        image: '/assets/images/router.png',
+        imageUrl: '/assets/images/router.png',
     },
     {
         id: 5,
@@ -81,6 +87,6 @@ var COURSES: Course[] = [
         code: 'PWY-9381',
         rating: 5,
         price: 56.99,
-        image: '/assets/images/animations.png',
+        imageUrl: '/assets/images/animations.png',
     }
 ];
